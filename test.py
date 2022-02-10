@@ -6,7 +6,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from torch.nn import L1Loss
 
-
+### test git 
 
 dir_    = r'C:\Users\zcemg08\PycharmProjects\gitlearning\data_samples\data_samples\graphical_data\*txt'
 dataset = dataset_graph_(dir_)
