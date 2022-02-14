@@ -24,6 +24,8 @@ Files with $_n.txt$ extention store CFD nodes information, where each rows gives
 |2|2|1|0\.5|-0\.25|16541\.9|1\.95862|-0\.315459|1\.0|
 |3|3|3|-0\.5|-0\.25|16493\.2|1\.97203|-0\.333595|1\.0|
 
+(Table 1)
+
 x,y       - node's coordinate 
 
 P,u_x,u_y - pressure and velocities in x and y direction
@@ -46,8 +48,20 @@ These node numbers correspond the above table node_num column.
 |2|2946|3395|7406|
 |3|1035|2688|7806|
 
-
+(Table 2)
 
 ![alt text](https://github.com/SergeyAnufriev/CFD_unet/blob/main/images/airfoil-no-special-mesh.png)
 
+(Figure 1)
+
+
+Prediction task:
+
+Given upstream conditions v_x,v_y,P_inf (file names) and mesh geometry ($_c.txt$) with coordinates x,y columns in ($_n.txt$)
+predict P,u_x and u_y columns in ($_n.txt$). 
+
+
+Proposed method: 
+
+Graph u_net https://arxiv.org/pdf/1905.05178.pdf
 
