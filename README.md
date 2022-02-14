@@ -1,8 +1,11 @@
 # CFD_unet
 Unet application to CFD data
+Problem description:
 
+Given airflow boundary conditions find the local 
+velocities and pressures around an airfoil. 
 
-Data description 
+Data description: 
 
 The data set consists of files with $_n.txt$, $_c.txt$ and $_f.txt$, which represent CFD simulation.
 The file names specify simulation conditions.
@@ -36,9 +39,8 @@ node_type - type of node including
    2 - airfoil surface 
    3 - inlet
 
-Files with $_c.txt$ extention store mesh (Figure 1) triangles connectivity data. 
-The mesh consists of triangular elements,with each table row shows, triangles nodes numbers.
-These node numbers correspond the above table node_num column. 
+Files with $_c.txt$  store mesh (Figure 1) triangles connectivity data. 
+The table rows show nodes numbers (Table 1, node\_num) in one mesh triangle.
 
 
 |index|0|2|4|
@@ -55,7 +57,7 @@ These node numbers correspond the above table node_num column.
 (Figure 1)
 
 
-Prediction task:
+Model task:
 
 Given upstream conditions v_x,v_y,P_inf (file names) and mesh geometry ($_c.txt$) with coordinates x,y columns in ($_n.txt$)
 predict P,u_x and u_y columns in ($_n.txt$). 
@@ -84,12 +86,14 @@ In this case input node feature vector X represents:
 
 Graph adjecency matrix A obtained by:
 1) Mesh triangles conectivety (Table 2)
-2) Edge feature displacement vector |v_ij| between nodes and their norm |v_ij|
-where v_ij = [x_i-x_j,y_i-y_j] as in 
+2) Edge feature displacement vector |e_ij| between nodes and their norm |e_ij|
+where e_ij = [x_i-x_j,y_i-y_j] as in 
 https://arxiv.org/abs/2010.03409 (p 13, type Euclidean)
 
 The output feature vector Y represents:
 1) velocity in x direction u_x (Table 1)
 2) velocity in y direction u_y (Table 2)
 3) local pressure P (Table 2)
+
+
 
