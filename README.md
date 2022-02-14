@@ -4,13 +4,15 @@ Unet application to CFD data
 
 Data description 
 
+Files with $_n.txt$ extention store CFD nodes information, where the columns are ordered by:
+
+|index|node\_num|node\_type|x|y|P|u\_x|u\_y|cav|
+|---|---|---|---|---|---|---|---|---|
+|0|0|2|0\.115|0\.0001817|15622\.5|0\.0|0\.0|1\.0|
+|1|1|1|0\.5|0\.25|16542\.9|1\.97403|-0\.33367|1\.0|
+|2|2|1|0\.5|-0\.25|16541\.9|1\.95862|-0\.315459|1\.0|
+|3|3|3|-0\.5|-0\.25|16493\.2|1\.97203|-0\.333595|1\.0|
+|4|4|3|-0\.5|0\.25|16545\.1|1\.97199|-0\.333572|1\.0|
 
 
-
-Proposed model 
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space;x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" />
-
-
-
-<img src="https://latex.codecogs.com/svg.image?The&space;data&space;set&space;consists&space;of&space;files&space;with&space;_n.txt,&space;_c.txt&space;and&space;_f.txt.&space;Files&space;with&space;the&space;same&space;name&space;are&space;CFD&space;simulations&space;of&space;airfoil,&space;with&space;the&space;file&space;name&space;specifying&space;the&space;simulation&space;conditions.&space;For&space;example&space;file&space;'1e662_193_51_17291_744_149_n.txt'&space;specifies&space;airfoil&space;upstream&space;conditions&space;such&space;as&space;Upstream&space;velocity&space;in&space;x&space;direction&space;&space;&space;&space;u_{x}&space;&space;&space;&space;&space;=&space;1.93Upstream&space;velocity&space;in&space;y&space;direction&space;&space;&space;&space;u_{y}&space;&space;&space;&space;&space;=&space;0.51Upstream&space;pressure&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;&space;P_{\infy}&space;=&space;17291\infty" title="The data set consists of files with _n.txt, _c.txt and _f.txt. Files with the same name are CFD simulations of airfoil, with the file name specifying the simulation conditions. For example file '1e662_193_51_17291_744_149_n.txt' specifies airfoil upstream conditions such as Upstream velocity in x direction u_{x} = 1.93Upstream velocity in y direction u_{y} = 0.51Upstream pressure P_{\infy} = 17291\infty" />
+Proposed model
