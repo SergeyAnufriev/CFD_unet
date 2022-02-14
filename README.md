@@ -65,3 +65,31 @@ Proposed method:
 
 Graph u_net https://arxiv.org/pdf/1905.05178.pdf
 
+
+https://github.com/SergeyAnufriev/CFD_unet/blob/main/images/graph_unet.PNG
+
+![alt_text](https://github.com/SergeyAnufriev/CFD_unet/blob/main/images/graph_unet.PNG)
+
+(Figure 2)
+
+Graph unet takes Graph represented by adjecency matrix A and node feature vector X and 
+outputs graph with the same adjecency matrix A but with node feature vector Y
+
+
+In this case input node feature vector X represents:
+
+1) upstream conditions equal for all graph nodes: u_x,u_y,P_inf (simulation file name)
+2) node type node_type (Table 1)
+3) node coordinate x,y (Table 1)
+
+Graph adjecency matrix A obtained by:
+1) Mesh triangles conectivety (Table 2)
+2) Edge feature displacement vector |v_ij| between nodes and their norm |v_ij|
+where v_ij = [x_i-x_j,y_i-y_j] as in 
+https://arxiv.org/abs/2010.03409 (p 13, type Euclidean)
+
+The output feature vector Y represents:
+1) velocity in x direction u_x (Table 1)
+2) velocity in y direction u_y (Table 2)
+3) local pressure P (Table 2)
+
