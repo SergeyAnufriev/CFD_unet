@@ -48,6 +48,6 @@ These node numbers correspond the above table node_num column.
 
 
 
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/SergeyAnufriev/CFD_unet/blob/main/images/airfoil-no-special-mesh.png)
 
 
