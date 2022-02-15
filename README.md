@@ -95,5 +95,7 @@ The output feature vector Y represents:
 2) velocity in y direction u_y (Table 2)
 3) local pressure P (Table 2)
 
+The model will be trained either by minimizing L1/L2(unet(X,A),Y)
+
 
 
