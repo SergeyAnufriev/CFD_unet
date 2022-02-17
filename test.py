@@ -1,3 +1,6 @@
+'''The file purpose is to check model forward pass'''
+
+
 from torch_geometric.data import DataLoader
 from data_ import dataset_graph_
 from torch_geometric.nn import GraphUNet

@@ -82,7 +82,7 @@ In this case input node feature vector X represents:
 
 1) upstream conditions equal for all graph nodes: u_x,u_y,P_inf (simulation file name)
 2) node type node_type (Table 1)
-3) node coordinate x,y (Table 1)
+
 
 Graph adjecency matrix A obtained by:
 1) Mesh triangles conectivety (Table 2)

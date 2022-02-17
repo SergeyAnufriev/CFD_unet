@@ -1,3 +1,9 @@
+'''The module purpose is to load simulation data in _n.txt,_c.txt files into
+pytorch geometric dataset object https://pytorch-geometric.readthedocs.io/en/latest/notes/create_dataset.html,
+which will be used to create data batches, where single entity withing batch includes one CFD simulation,which
+is described by input graph and target graph node feature matrix '''
+
+
 import torch
 from torch_geometric.data import Dataset
 import glob
@@ -33,7 +39,7 @@ files = glob.glob(dir_files)
    '''
 
 
-def read_file(dir):
+def read_file(dir:str)->list:
     with open(dir, 'r') as fd:
         lines = []
         for line in fd:
@@ -41,7 +47,7 @@ def read_file(dir):
     return lines
 
 
-def connectivity_data(dir_c, dict_):
+def connectivity_data(dir_c:str, dict_:dict)->torch.long:
     '''Input: connectivity file location and Node translation dictionary
     Output: adj matrix in CCO format - torch long tensor'''
 
@@ -64,7 +70,7 @@ def connectivity_data(dir_c, dict_):
     return torch.unique(torch.tensor(CCO_matrix, dtype=torch.long),dim=1) ### remove repeating edges
 
 
-def edge_features(CCO_matrix,X_input):
+def edge_features(CCO_matrix:torch.long,X_input:torch.float)->torch.float32:
     '''Input: CCO_matrix, X_input
      output: edge features including : displacement vector and its euclidean norm'''
 
@@ -76,7 +82,7 @@ def edge_features(CCO_matrix,X_input):
     return torch.cat([u_ij,norm_.unsqueeze(1)],dim=1)
 
 
-def velocities_cav(dir):
+def velocities_cav(dir:str)->torch.float32:
     '''Input file name:
     Output: u_x,u_y,cav'''
     data = dir.split('\\')[-1].split('_')
@@ -87,7 +93,7 @@ def velocities_cav(dir):
     return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
 
 
-def node_data(dir):
+def node_data(dir:str):
     '''Input: Node file directory
     Out: Node feat vector X_input, X_output, and node translation dictionary'''
     files2 = read_file(dir)
@@ -124,15 +130,17 @@ def node_data(dir):
 
 
 class dataset_graph_(Dataset):
-
-    def __init__(self, dir, transform=None, pre_transform=None):
+    '''class initiates by providing directory to simulation data in _n.txt,_c.txt files'''
+    def __init__(self, dir:str, transform=None, pre_transform=None):
         super().__init__(None, transform, pre_transform)
         self.files = glob.glob(dir)
 
     def len(self):
         return int(len(self.files) / 3)
 
-    def get(self, idx):
+    def get(self, idx:int):
+        '''The function takes simulation number and returns model input in graph format and
+                  target variable in matrix form'''
         c = idx*3
         n = c + 2
 
