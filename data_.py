@@ -82,10 +82,10 @@ def edge_features(CCO_matrix:torch.long,X_input:torch.float)->torch.float32:
     return torch.cat([u_ij,norm_.unsqueeze(1)],dim=1)
 
 
-def velocities_cav(dir:str)->torch.float32:
+def velocities_cav(dir:str,split_by='\\')->torch.float32:
     '''Input file name:
     Output: u_x,u_y,cav'''
-    data = dir.split('\\')[-1].split('_')
+    data = dir.split(split_by)[-1].split('_')
     u_x  = float(data[1])/100
     u_y  = float(data[2])/100
     cav  = float(data[-2])/100
@@ -93,7 +93,7 @@ def velocities_cav(dir:str)->torch.float32:
     return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
 
 
-def node_data(dir:str):
+def node_data(dir:str,split_by='\\'):
     '''Input: Node file directory
     Out: Node feat vector X_input, X_output, and node translation dictionary'''
     files2 = read_file(dir)
@@ -103,7 +103,7 @@ def node_data(dir:str):
 
     output_nodes_data = torch.zeros(len(files2),3)                 # v_x,v_y,P
     input_coord       = torch.zeros(len(files2),2)                 # x,y
-    u_x_u_y_cav       = velocities_cav(dir).repeat(len(files2), 1) # values the same for all input graph nodes
+    u_x_u_y_cav       = velocities_cav(dir,split_by).repeat(len(files2), 1) # values the same for all input graph nodes
 
 
     for i, line in enumerate(files2):
@@ -131,9 +131,10 @@ def node_data(dir:str):
 
 class dataset_graph_(Dataset):
     '''class initiates by providing directory to simulation data in _n.txt,_c.txt files'''
-    def __init__(self, dir:str, transform=None, pre_transform=None):
+    def __init__(self, dir:str, transform=None, pre_transform=None,split_by='//'):
         super().__init__(None, transform, pre_transform)
         self.files = glob.glob(dir)
+        self.split_by = split_by
 
     def len(self):
         return int(len(self.files) / 3)
@@ -144,7 +145,7 @@ class dataset_graph_(Dataset):
         c = idx*3
         n = c + 2
 
-        X_input, X_output, node_dict_ = node_data(self.files[n])
+        X_input, X_output, node_dict_ = node_data(self.files[n],self.split_by)
         coo_matrix                    = connectivity_data(self.files[c], node_dict_)
         edge_feat                     = edge_features(coo_matrix,X_input)
 
