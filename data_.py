@@ -80,8 +80,8 @@ def edge_features(CCO_matrix:torch.long,X_input:torch.float)->torch.float32:
     u_ij     = x_y_in - x_y_out
     norm_    = torch.norm(u_ij,dim=1)
 
-    return torch.cat([u_ij,norm_.unsqueeze(1)],dim=1)
-
+    #return torch.cat([u_ij,norm_.unsqueeze(1)],dim=1)
+    return norm_.unsqueeze(1)
 
 def velocities_cav(dir:str,split_by='\\')->torch.float32:
     '''Input file name:
@@ -150,7 +150,7 @@ class dataset_graph_(Dataset):
         coo_matrix                    = connectivity_data(self.files[c], node_dict_)
         edge_feat                     = edge_features(coo_matrix,X_input)
 
-        Graph = Data(x=X_input, edge_index=coo_matrix,edge_attr=edge_feat)
+        Graph = Data(x=X_input, edge_index=coo_matrix,edge_weight=edge_feat)
 
         return Graph,X_output
 
