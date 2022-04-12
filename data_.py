@@ -83,7 +83,7 @@ def edge_features(CCO_matrix:torch.long,X_input:torch.float)->torch.float32:
     #return torch.cat([u_ij,norm_.unsqueeze(1)],dim=1)
     return norm_.unsqueeze(1)
 
-def velocities_cav(dir:str,split_by='\\')->torch.float32:
+def velocities_cav(dir:str,split_by:str)->torch.float32:
     '''Input file name:
     Output: u_x,u_y,cav'''
     data = dir.split(split_by)[-1].split('_')
