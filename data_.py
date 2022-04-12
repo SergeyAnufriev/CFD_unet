@@ -94,7 +94,7 @@ def velocities_cav(dir:str,split_by='\\')->torch.float32:
     return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
 
 
-def node_data(dir:str,split_by='\\'):
+def node_data(dir:str,split_by):
     '''Input: Node file directory
     Out: Node feat vector X_input, X_output, and node translation dictionary'''
     files2 = read_file(dir)
@@ -132,7 +132,7 @@ def node_data(dir:str,split_by='\\'):
 
 class dataset_graph_(Dataset):
     '''class initiates by providing directory to simulation data in _n.txt,_c.txt files'''
-    def __init__(self, dir:str, transform=None, pre_transform=None,split_by='//'):
+    def __init__(self, dir:str,split_by:str, transform=None, pre_transform=None):
         super().__init__(None, transform, pre_transform)
         self.files = sorted(glob.glob(dir),key=os.path.getmtime)
         self.split_by = split_by
