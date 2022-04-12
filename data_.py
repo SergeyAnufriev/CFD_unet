@@ -134,7 +134,7 @@ class dataset_graph_(Dataset):
     '''class initiates by providing directory to simulation data in _n.txt,_c.txt files'''
     def __init__(self, dir:str,split_by:str, transform=None, pre_transform=None):
         super().__init__(None, transform, pre_transform)
-        self.files = sorted(glob.glob(dir),key=os.path.getmtime)
+        self.files = sorted(glob.glob(dir))
         self.split_by = split_by
 
     def len(self):
