@@ -89,10 +89,10 @@ def velocities_cav(dir:str,split_by:str)->torch.float32:
     data = dir.split(split_by)[-1].split('_')
     u_x  = float(data[1])/100
     u_y  = float(data[2])/100
-    cav  = float(data[-2])/100
+    #cav  = float(data[-2])/100
 
-    return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
-
+    #return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
+    return torch.tensor([u_x,u_y],dtype=torch.float32)
 
 def node_data(dir:str,split_by):
     '''Input: Node file directory
@@ -104,7 +104,7 @@ def node_data(dir:str,split_by):
 
     output_nodes_data = torch.zeros(len(files2),3)                 # v_x,v_y,P
     input_coord       = torch.zeros(len(files2),2)                 # x,y
-    u_x_u_y_cav       = velocities_cav(dir,split_by).repeat(len(files2), 1) # values the same for all input graph nodes
+    u_x_u_y           = velocities_cav(dir,split_by).repeat(len(files2), 1) # values the same for all input graph nodes
 
 
     for i, line in enumerate(files2):
@@ -122,7 +122,7 @@ def node_data(dir:str,split_by):
     node_type_tensor = one_hot(torch.tensor(node_type, dtype=torch.long))
 
     '''Input graph nodes data'''
-    X_input  = torch.cat([input_coord,u_x_u_y_cav,node_type_tensor], dim=1)  # x,y,u_x,u_y,cav,node_type
+    X_input  = torch.cat([input_coord,u_x_u_y,node_type_tensor], dim=1)  # x,y,u_x,u_y,cav,node_type
 
     '''Output graph nodes data'''
     X_output = output_nodes_data   # P,v_x,v_y
