@@ -1,7 +1,7 @@
-'''The module purpose is to load simulation data in _n.txt,_c.txt files into
+"""The module purpose is to load simulation data in _n.txt,_c.txt files into
 pytorch geometric dataset object https://pytorch-geometric.readthedocs.io/en/latest/notes/create_dataset.html,
 which will be used to create data batches, where single entity withing batch includes one CFD simulation,which
-is described by input graph and target graph node feature matrix '''
+is described by input graph and target graph node feature matrix """
 
 
 import torch
@@ -92,7 +92,7 @@ def velocities_cav(dir:str,split_by:str)->torch.float32:
     #cav  = float(data[-2])/100
 
     #return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
-    return torch.tensor([u_x,u_y],dtype=torch.float32)
+    return torch.tensor([u_x,u_y],dtype=torch.float32) # make input velocities dimentionless by dividing |v_inp|
 
 def node_data(dir:str,split_by):
     '''Input: Node file directory
@@ -104,7 +104,7 @@ def node_data(dir:str,split_by):
 
     output_nodes_data = torch.zeros(len(files2),3)                 # v_x,v_y,P
     input_coord       = torch.zeros(len(files2),2)                 # x,y
-    u_x_u_y           = velocities_cav(dir,split_by).repeat(len(files2), 1) # values the same for all input graph nodes
+    u_x_u_y           = velocities_cav(dir,split_by).repeat(len(files2), 1)/2 # make input velocities dimless
 
 
     for i, line in enumerate(files2):
@@ -116,8 +116,8 @@ def node_data(dir:str,split_by):
         '''float_data = x,y,P,v_x,v_y'''
         x, y, P, v_x, v_y      = [float(line_[x]) for x in range(2, 7)]
 
-        output_nodes_data[i,:] = torch.tensor([P,v_x,v_y],dtype=torch.float32)
-        input_coord[i,:]       = torch.tensor([x,y],dtype=torch.float32)
+        output_nodes_data[i,:] = torch.tensor([P,v_x,v_y],dtype=torch.float32)  # make velocities and pressure dimless
+        input_coord[i,:]       = torch.tensor([x,y],dtype=torch.float32) # normilise input coord by min max to [-1,1]
 
     node_type_tensor = one_hot(torch.tensor(node_type, dtype=torch.long))
 
@@ -150,7 +150,7 @@ class dataset_graph_(Dataset):
         coo_matrix                    = connectivity_data(self.files[c], node_dict_)
         edge_feat                     = edge_features(coo_matrix,X_input)
 
-        Graph = Data(x=X_input, edge_index=coo_matrix,edge_weight=edge_feat)
+        Graph = Data(x=X_input, edge_index=coo_matrix,edge_weight=edge_feat,y=X_output)
 
-        return Graph,X_output
+        return Graph
 
