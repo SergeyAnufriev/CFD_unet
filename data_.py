@@ -113,6 +113,11 @@ def node_data(dir:str,split_by):
         node_dict_[node_number] = counter
         counter += 1
         node_type.append(int(line_[1]))
+
+        '''no slip condition'''
+        if int(line_[1]) == 2:
+            u_x_u_y[i,:] = torch.zeros(2,1,dtype=torch.float32)
+
         '''float_data = x,y,P,v_x,v_y'''
         x, y, P, v_x, v_y      = [float(line_[x]) for x in range(2, 7)]
 
