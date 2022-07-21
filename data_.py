@@ -9,7 +9,7 @@ from torch_geometric.data import Dataset
 import glob
 from torch.nn.functional import one_hot
 from torch_geometric.data import Data
-import os
+
 
 
 '''1e662_193_51_17291_744_149_n.txt
@@ -104,7 +104,7 @@ def node_data(dir:str,split_by):
 
     output_nodes_data = torch.zeros(len(files2),3)                 # v_x,v_y,P
     input_coord       = torch.zeros(len(files2),2)                 # x,y
-    u_x_u_y           = velocities_cav(dir,split_by).repeat(len(files2), 1)/2 # make input velocities dimless
+    u_x_u_y           = velocities_cav(dir,split_by).repeat(len(files2), 1) # make input velocities dimless
 
 
     for i, line in enumerate(files2):
