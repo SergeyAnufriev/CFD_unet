@@ -9,6 +9,7 @@ from torch_geometric.data import Dataset
 import glob
 from torch.nn.functional import one_hot
 from torch_geometric.data import Data
+import pandas as pd
 
 
 
@@ -86,53 +87,38 @@ def edge_features(CCO_matrix:torch.long,X_input:torch.float)->torch.float32:
 def velocities_cav(dir:str,split_by:str)->torch.float32:
     '''Input file name:
     Output: u_x,u_y,cav'''
-    data = dir.split(split_by)[-1].split('_')
-    u_x  = float(data[1])/100
-    u_y  = float(data[2])/100
-    #cav  = float(data[-2])/100
+    data   = dir.split(split_by)[-1].split('_')
+    u_x    = float(data[1])/100
+    u_y    = float(data[2])/100
+    p_amb  = float(data[3])
+    cav    = float(data[-2])/100
+    return u_x,u_y,p_amb,cav
 
-    #return torch.tensor([u_x,u_y,cav],dtype=torch.float32)
-    return torch.tensor([u_x,u_y],dtype=torch.float32) # make input velocities dimentionless by dividing |v_inp|
+def read_file_n(dir_,split_by):
 
-def node_data(dir:str,split_by):
-    '''Input: Node file directory
-    Out: Node feat vector X_input, X_output, and node translation dictionary'''
-    files2 = read_file(dir)
-    counter = 0
-    node_dict_ = {}
-    node_type = []
+    df = pd.read_csv(dir_,sep =' ',header=None)
+    df = df.drop(labels=list(range(1, 15, 2)),axis=1)
+    df.columns = ['node_num','node_type','x','y','P','v_x','v_y','cav']
+    df = df.astype({"P": float, "cav": float})
 
-    output_nodes_data = torch.zeros(len(files2),3)                 # v_x,v_y,P
-    input_coord       = torch.zeros(len(files2),2)                 # x,y
-    u_x_u_y           = velocities_cav(dir,split_by).repeat(len(files2), 1) # make input velocities dimless
+    '''all nodes have the same starting velocity'''
+    df['u_x'], df['u_y'],df['p_amb'],df['cav'] = velocities_cav(dir_,split_by)
 
+    '''no slip condition'''
+    df.loc[df['node_type']==2,'u_x'] = 0
+    df.loc[df['node_type']==2,'u_y'] = 0
 
-    for i, line in enumerate(files2):
-        line_ = line.split('  ')
-        node_number = int(line_[0])
-        node_dict_[node_number] = counter
-        counter += 1
-        node_type.append(int(line_[1]))
+    return df
 
-        '''no slip condition'''
-        if int(line_[1]) == 2:
-            u_x_u_y[i,:] = torch.zeros(1,2,dtype=torch.float32)
+def node_data(df):
 
-        '''float_data = x,y,P,v_x,v_y'''
-        x, y, P, v_x, v_y      = [float(line_[x]) for x in range(2, 7)]
+    node_dict_ = {x:y for x,y in zip(df['node_num'],list(range(len(df))))}
+    coord_velocities = torch.tensor(df[['x','y','u_x','u_y']].values)
+    nodes_types = one_hot(torch.tensor(df['node_type'],dtype=torch.long))
+    X_input = torch.cat([coord_velocities,nodes_types],dim=1)
+    X_output = torch.tensor(df[['P','v_x','v_y']].values)
 
-        output_nodes_data[i,:] = torch.tensor([P,v_x,v_y],dtype=torch.float32)  # make velocities and pressure dimless
-        input_coord[i,:]       = torch.tensor([x,y],dtype=torch.float32) # normilise input coord by min max to [-1,1]
-
-    node_type_tensor = one_hot(torch.tensor(node_type, dtype=torch.long))
-
-    '''Input graph nodes data'''
-    X_input  = torch.cat([input_coord,u_x_u_y,node_type_tensor], dim=1)  # x,y,u_x,u_y,cav,node_type
-
-    '''Output graph nodes data'''
-    X_output = output_nodes_data   # P,v_x,v_y
-
-    return X_input, X_output, node_dict_
+    return X_input,X_output,node_dict_
 
 
 class dataset_graph_(Dataset):
@@ -151,7 +137,7 @@ class dataset_graph_(Dataset):
         c = idx*3
         n = c + 2
 
-        X_input, X_output, node_dict_ = node_data(self.files[n],self.split_by)
+        X_input, X_output, node_dict_ = node_data(read_file_n(self.files[n],self.split_by))
         coo_matrix                    = connectivity_data(self.files[c], node_dict_)
         edge_feat                     = edge_features(coo_matrix,X_input)
 
