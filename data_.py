@@ -113,10 +113,10 @@ def read_file_n(dir_,split_by):
 def node_data(df):
 
     node_dict_ = {x:y for x,y in zip(df['node_num'],list(range(len(df))))}
-    coord_velocities = torch.tensor(df[['x','y','u_x','u_y']].values,dtype=torch.float32)
-    nodes_types = one_hot(torch.tensor(df['node_type'],dtype=torch.long))
+    coord_velocities = torch.tensor(df[['x','y','u_x','u_y']].values,dtype=torch.double)
+    nodes_types = one_hot(torch.tensor(df['node_type'],dtype=torch.double))
     X_input = torch.cat([coord_velocities,nodes_types],dim=1)
-    X_output = torch.tensor(df[['P','v_x','v_y']].values,dtype=torch.float32)
+    X_output = torch.tensor(df[['P','v_x','v_y']].values,dtype=torch.double)
 
     return X_input,X_output,node_dict_
 
