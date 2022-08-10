@@ -143,7 +143,7 @@ class dataset_graph_(Dataset):
         coo_matrix                    = connectivity_data(self.files[c], node_dict_)
         edge_feat                     = edge_features(coo_matrix,X_input)
 
-        Graph = Data(x=X_input, edge_index=coo_matrix,edge_weight=edge_feat,y=X_output)
+        Graph = Data(x=X_input, edge_index=coo_matrix,edge_weight=edge_feat,y=X_output,file_name=self.files[n])
 
         return Graph
 
