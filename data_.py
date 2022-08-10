@@ -104,7 +104,7 @@ def read_file_n(dir_,split_by):
     '''all nodes have the same starting velocity'''
     df['u_x'], df['u_y'],df['p_amb'],df['cav'] = velocities_cav(dir_,split_by)
 
-    df['P'] = df['P']-df['p_amb']
+    #df['P'] = df['P']-df['p_amb']
 
     '''no slip condition'''
     df.loc[df['node_type']==2,'u_x'] = 0
